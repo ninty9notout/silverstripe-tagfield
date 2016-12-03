@@ -1,5 +1,21 @@
 <?php
 
+namespace SilverStripe\Forms;
+
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Form\ReadonlyField;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\SS_List;
+use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObjectInterface;
+use SilverStripe\View\Requirements;
+use SilverStripe\View\ArrayData;
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\HTTPResponse;
+
 /**
  * Provides a tagging interface, storing links between tag DataObjects and a parent DataObject.
  *
@@ -296,7 +312,7 @@ class TagField extends DropdownField
         }
 
         if(!$record->hasMethod($name)) {
-            throw new Exception(
+            throw new \Exception(
                 sprintf("%s does not have a %s method", get_class($record), $name)
             );
         }
@@ -347,15 +363,15 @@ class TagField extends DropdownField
     /**
      * Returns a JSON string of tags, for lazy loading.
      *
-     * @param SS_HTTPRequest $request
+     * @param HTTPRequest $request
      *
-     * @return SS_HTTPResponse
+     * @return HTTPResponse
      */
-    public function suggest(SS_HTTPRequest $request)
+    public function suggest(HTTPRequest $request)
     {
         $tags = $this->getTags($request->getVar('term'));
 
-        $response = new SS_HTTPResponse();
+        $response = new HTTPResponse();
         $response->addHeader('Content-Type', 'application/json');
         $response->setBody(json_encode(array('items' => $tags)));
 
